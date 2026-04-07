@@ -140,6 +140,12 @@ export default function Sidebar({
         )}        {parseError && <div className="error-msg">{parseError}</div>}
       </section>
 
+      <Legend
+        colorFacetField={config.colorFacetField}
+        colorEntries={colorEntries}
+        edgeColorMap={edgeColorMap}
+      />
+
       {/* ── Display options ────────────────────────────────────────────── */}
       {nodeFields.length > 0 && (
         <section className="sidebar-section">
@@ -211,12 +217,6 @@ export default function Sidebar({
         )
       })}
 
-      {/* ── Legend ────────────────────────────────────────────────────── */}
-      <Legend
-        colorFacetField={config.colorFacetField}
-        colorEntries={colorEntries}
-        edgeColorMap={edgeColorMap}
-      />
     </aside>
   )
 }
