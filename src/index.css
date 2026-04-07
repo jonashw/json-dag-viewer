@@ -1,0 +1,25 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #12131a;
+  --bg-sidebar:  #1a1d2e;
+  --bg-panel:    #1f2337;
+  --bg-input:    #0e0f18;
+  --border:      #2e3050;
+  --text:        #d4d8f0;
+  --text-dim:    #7a7f9a;
+  --accent:      #4e9e8c;
+  --accent-blue: #4e79a7;
+  --danger:      #e15759;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+}

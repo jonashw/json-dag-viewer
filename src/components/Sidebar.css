@@ -1,0 +1,152 @@
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sidebar-section {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.json-input {
+  width: 100%;
+  height: 180px;
+  resize: vertical;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  padding: 6px;
+  border-radius: 4px;
+  outline: none;
+}
+.json-input:focus { border-color: var(--accent); }
+
+.sidebar-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.error-msg {
+  background: rgba(225, 87, 89, 0.12);
+  border: 1px solid rgba(225, 87, 89, 0.4);
+  color: #f08080;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  word-break: break-word;
+}
+
+.btn-neo4j {
+  flex: 1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #4581c4;
+  background: transparent;
+  color: #4b9ffe;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.btn-neo4j:hover { background: rgba(75, 159, 254, 0.12); }
+.btn-neo4j--query {
+  border-color: #7a6ec4;
+  color: #b3a8f0;
+}
+.btn-neo4j--query:hover { background: rgba(179, 168, 240, 0.12); }
+.btn-neo4j--danger {
+  border-color: #c44a4a;
+  color: #f08080;
+}
+.btn-neo4j--danger:hover { background: rgba(240, 128, 128, 0.12); }
+.btn-neo4j--feedback {
+  background: rgba(75, 159, 254, 0.18);
+  border-color: #4b9ffe;
+  color: #a8d4ff;
+  cursor: default;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 12px;
+}
+.checkbox-label input[type=checkbox] { accent-color: var(--accent); }
+
+.checkbox-label--small { font-size: 11px; }
+
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+
+/* ── HTTP method badges ─────────────────────────────────────────────────── */
+.method-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #000;
+}
+.method-get     { background: #4e9e8c; }
+.method-post    { background: #4e79a7; color: #fff; }
+.method-put     { background: #f28e2b; }
+.method-patch   { background: #e6a817; }
+.method-delete  { background: #e15759; color: #fff; }
+.method-unknown { background: #76b7b2; }
+
+/* ── Display / caption / colour controls ──────────────────────────────── */
+.sidebar-field-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.sidebar-select {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+.sidebar-select:focus { border-color: var(--accent); }
+
+/* ── Colour dot shown inside a facet checkbox row ─────────────────────── */
+.facet-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
