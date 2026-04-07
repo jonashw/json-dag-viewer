@@ -17,6 +17,7 @@ interface Props {
 
 export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick, onCanvasClick }: Props) {
     const nvlRef = useRef<NVL>(null)
+    const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId: string } | null>(null)
 
     // NVL requires the minimap container to exist in the DOM *before* it initialises.
     // Render the div unconditionally first, capture it via a callback ref, then
@@ -84,7 +85,7 @@ export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick
                 nvlCallbacks={{
                     onLayoutDone: () => {
                         console.log('layout done');
-                        fitAll();
+                        //fitAll();
                     }
                 }}
                 nvlOptions={{
@@ -96,9 +97,14 @@ export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick
                     maxZoom: 5,
                 }}
                 mouseEventCallbacks={{
-                    onNodeClick: (node) => onNodeClick(node),
-                    onRelationshipClick: (rel) => onRelClick(rel),
-                    onCanvasClick: () => onCanvasClick(),
+                    onNodeClick: (node) => { setContextMenu(null); onNodeClick(node) },
+                    onNodeRightClick: (_node, _hit, event) => {
+                        event.preventDefault()
+                        setContextMenu({ x: event.clientX, y: event.clientY, nodeId: _node.id })
+                    },
+                    onRelationshipClick: (rel) => { setContextMenu(null); onRelClick(rel) },
+                    onCanvasClick: () => { setContextMenu(null); onCanvasClick() },
+                    onDrag: true,
                     onZoom: true,
                     onPan: true,
                 }}
@@ -110,7 +116,18 @@ export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick
                 <button className="zoom-btn" onClick={zoomOut} title="Zoom out">−</button>
                 <button className="zoom-btn zoom-fit" onClick={fitAll} title="Fit all nodes">⊑</button>
             </div>
-
+            {/* ── context menu ──────────────────────────────────────────────────────── */}
+            {contextMenu && (
+                <div
+                    className="graph-context-menu"
+                    style={{ left: contextMenu.x, top: contextMenu.y }}
+                >
+                    <button onClick={() => {
+                        nvlRef.current?.updateElementsInGraph([{ id: contextMenu.nodeId, pinned: false }], [])
+                        setContextMenu(null)
+                    }}>Unpin node</button>
+                </div>
+            )}
         </div>
     )
 }

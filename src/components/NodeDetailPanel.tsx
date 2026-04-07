@@ -27,7 +27,7 @@ export default function NodeDetailPanel(props: Props) {
     <aside className="detail-panel">
       <div className="detail-header">
         <span className="detail-type-badge detail-id-badge" title={title}>{title}</span>
-        <button className="btn-icon detail-close" onClick={onClose} title="Close">\u2715</button>
+        <button className="btn-icon detail-close" onClick={onClose} title="Close">&times;</button>
       </div>
 
       <dl className="detail-dl">
