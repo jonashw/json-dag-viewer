@@ -1,0 +1,1 @@
+npx ts-json-schema-generator --path './src/**/*.ts' --type 'RawGraph' --no-type-check -o raw-graph.schema.json
