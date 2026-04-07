@@ -11,10 +11,11 @@ interface Props {
   rels:          Relationship[]
   layout:        'forceDirected' | 'hierarchical'
   onNodeClick:   (node: Node) => void
+  onRelClick:    (rel: Relationship) => void
   onCanvasClick: () => void
 }
 
-export default function GraphView({ nodes, rels, layout, onNodeClick, onCanvasClick }: Props) {
+export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick, onCanvasClick }: Props) {
     const nvlRef = useRef<NVL>(null)
 
     // NVL requires the minimap container to exist in the DOM *before* it initialises.
@@ -96,6 +97,7 @@ export default function GraphView({ nodes, rels, layout, onNodeClick, onCanvasCl
                 }}
                 mouseEventCallbacks={{
                     onNodeClick: (node) => onNodeClick(node),
+                    onRelationshipClick: (rel) => onRelClick(rel),
                     onCanvasClick: () => onCanvasClick(),
                     onZoom: true,
                     onPan: true,

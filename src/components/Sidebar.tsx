@@ -100,13 +100,13 @@ export default function Sidebar({
         <textarea
           className="json-input"
           spellCheck={false}
-          placeholder='Paste a graph JSON with "nodes" and "edges" arrays\u2026'
+          placeholder='Paste a graph JSON with "nodes" and "edges" arrays...'
           value={text}
           onChange={e => setText(e.target.value)}
         />
         <div className="sidebar-row">
           <button className="btn-primary" onClick={() => onLoad(text)}>Load</button>
-          <button className="btn-secondary" onClick={() => fileRef.current?.click()}>Open file\u2026</button>
+          <button className="btn-secondary" onClick={() => fileRef.current?.click()}>Open file...</button>
           <input ref={fileRef} type="file" accept=".json" style={{ display: 'none' }} onChange={handleFile} />
         </div>        {onExportNeo4j && (
           <div className="sidebar-row">

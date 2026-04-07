@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from 'react'
-import type { Node } from '@neo4j-nvl/base'
+import type { Node, Relationship } from '@neo4j-nvl/base'
 import GraphView from './components/GraphView'
 import Sidebar from './components/Sidebar'
 import NodeDetailPanel from './components/NodeDetailPanel'
-import type { DagGraph, DagNode, FacetDef, GraphConfig } from './types'
+import type { DagGraph, DagNode, DagEdge, FacetDef, GraphConfig } from './types'
 import {
   parseDagJson, applyFilters, convertToNvl,
   detectFacets, buildDefaultConfig, buildColorMap, buildEdgeColorMap,
@@ -24,8 +24,10 @@ export default function App() {
   })
   const [parseError,   setParseError]   = useState<string | null>(null)
   const [sidebarOpen,  setSidebarOpen]  = useState(true)
-  const [selectedNode, setSelectedNode] = useState<DagNode | null>(null)
-  const [layout,       setLayout]       = useState<'forceDirected' | 'hierarchical'>('forceDirected')
+  const [selectedNode,  setSelectedNode]  = useState<DagNode | null>(null)
+  const [selectedEdge,  setSelectedEdge]  = useState<DagEdge | null>(null)
+  const [selectedRelId, setSelectedRelId] = useState<string | null>(null)
+  const [layout,        setLayout]        = useState<'forceDirected' | 'hierarchical'>('forceDirected')
 
   // ---- derived data --------------------------------------------------------
   const nodeFields = useMemo(() => (dag ? deriveNodeFields(dag) : []), [dag])
@@ -61,6 +63,8 @@ export default function App() {
       setConfig(defaultConfig)
       setParseError(null)
       setSelectedNode(null)
+      setSelectedEdge(null)
+      setSelectedRelId(null)
     } catch (err) {
       setParseError(err instanceof Error ? err.message : String(err))
     }
@@ -70,9 +74,24 @@ export default function App() {
     if (!dag) return
     const found = dag.nodes.find(n => n.id === nvlNode.id) ?? null
     setSelectedNode(prev => (prev?.id === nvlNode.id ? null : found))
+    setSelectedEdge(null)
+    setSelectedRelId(null)
   }, [dag])
 
-  const handleCanvasClick = useCallback(() => setSelectedNode(null), [])
+  const handleRelClick = useCallback((nvlRel: Relationship) => {
+    if (!nvlGraph) return
+    const found = nvlGraph.edgeMap.get(nvlRel.id) ?? null
+    const toggling = selectedRelId === nvlRel.id
+    setSelectedEdge(toggling ? null : found)
+    setSelectedRelId(toggling ? null : nvlRel.id)
+    setSelectedNode(null)
+  }, [nvlGraph, selectedRelId])
+
+  const handleCanvasClick = useCallback(() => {
+    setSelectedNode(null)
+    setSelectedEdge(null)
+    setSelectedRelId(null)
+  }, [])
 
   const handleExportNeo4j = useCallback(async () => {
     if (!dag) return
@@ -142,10 +161,11 @@ export default function App() {
         <div className="graph-area">
           {nvlGraph ? (
             <GraphView
-              nodes={nvlGraph.nodes}
-              rels={nvlGraph.rels}
+              nodes={nvlGraph.nodes.map(n => ({ ...n, selected: n.id === selectedNode?.id }))}
+              rels={nvlGraph.rels.map(r => ({ ...r, selected: r.id === selectedRelId }))}
               layout={layout}
               onNodeClick={handleNodeClick}
+              onRelClick={handleRelClick}
               onCanvasClick={handleCanvasClick}
             />
           ) : (
@@ -156,7 +176,10 @@ export default function App() {
         </div>
 
         {selectedNode && (
-          <NodeDetailPanel node={selectedNode} onClose={() => setSelectedNode(null)} />
+          <NodeDetailPanel kind="node" node={selectedNode} onClose={() => setSelectedNode(null)} />
+        )}
+        {selectedEdge && (
+          <NodeDetailPanel kind="edge" edge={selectedEdge} onClose={() => setSelectedEdge(null)} />
         )}
       </div>
     </div>

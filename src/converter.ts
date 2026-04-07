@@ -248,8 +248,9 @@ export function applyFilters(dag: DagGraph, config: GraphConfig): DagGraph {
 // Convert to NVL graph for rendering
 // ---------------------------------------------------------------------------
 export interface NvlGraph {
-  nodes: Node[]
-  rels:  Relationship[]
+  nodes:   Node[]
+  rels:    Relationship[]
+  edgeMap: Map<string, DagEdge>
 }
 
 export function convertToNvl(
@@ -288,5 +289,7 @@ export function convertToNvl(
         width:   1.5,
       }
     }),
+
+    edgeMap: new Map(validEdges.map((edge, i) => [`edge-${i}`, edge])),
   }
 }

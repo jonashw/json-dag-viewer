@@ -31,10 +31,10 @@ Error: diagnostic done
     - complementary [ref=e11]:
       - generic [ref=e12]:
         - generic [ref=e13]: JSON Input
-        - textbox "Paste a graph JSON with \"nodes\" and \"edges\" arrays\\u2026" [ref=e14]: "{\"nodes\":[{\"id\":\"1\"},{\"id\":\"2\"},{\"id\":\"3\"}],\"edges\":[{\"from\":\"1\",\"to\":\"2\"},{\"from\":\"2\",\"to\":\"3\"}]}"
+        - textbox "Paste a graph JSON with \"nodes\" and \"edges\" arrays\..." [ref=e14]: "{\"nodes\":[{\"id\":\"1\"},{\"id\":\"2\"},{\"id\":\"3\"}],\"edges\":[{\"from\":\"1\",\"to\":\"2\"},{\"from\":\"2\",\"to\":\"3\"}]}"
         - generic [ref=e15]:
           - button "Load" [active] [ref=e16] [cursor=pointer]
-          - button "Open file\\u2026" [ref=e17] [cursor=pointer]
+          - button "Open file\..." [ref=e17] [cursor=pointer]
         - button "Export to Neo4j" [ref=e19] [cursor=pointer]
         - button "Copy visualise query" [ref=e21] [cursor=pointer]
         - button "Copy drop query" [ref=e23] [cursor=pointer]
