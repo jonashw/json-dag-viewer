@@ -55,6 +55,24 @@ export default function GraphView({ nodes, rels, layout, fitKey, onNodeClick, on
     const fitAllRef = useRef(fitAll)
     fitAllRef.current = fitAll
 
+    // Shift + trackpad scroll → pan instead of zoom
+    const graphContainerRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        const el = graphContainerRef.current
+        if (!el) return
+        const handler = (e: WheelEvent) => {
+            if (!e.shiftKey) return
+            e.preventDefault()
+            e.stopPropagation()
+            const nvl = nvlRef.current
+            if (!nvl) return
+            const { x, y } = nvl.getPan()
+            nvl.setPan(x - e.deltaX, y - e.deltaY)
+        }
+        el.addEventListener('wheel', handler, { capture: true, passive: false })
+        return () => el.removeEventListener('wheel', handler, { capture: true })
+    }, [])
+
     // Dev-only test helper: exposes nvlRef state on window so Playwright tests can verify it
     useEffect(() => {
         if (import.meta.env.DEV) {
@@ -81,7 +99,7 @@ export default function GraphView({ nodes, rels, layout, fitKey, onNodeClick, on
 
 
     return (
-        <div className="graph-view">
+        <div ref={graphContainerRef} className="graph-view">
             {/* Rendered first so the element exists before NVL initialises */}
             <div ref={minimapRef} className="minimap" title="Minimap (click to pan)" />
 
