@@ -30,6 +30,7 @@ export default function App() {
   const [selectedRelId, setSelectedRelId] = useState<string | null>(null)
   const [layout,        setLayout]        = useState<'forceDirected' | 'hierarchical'>('forceDirected')
   const [fitKey, setFitKey] = useState(0)
+  const [hiddenNodeIds, setHiddenNodeIds] = useState<Set<string>>(new Set())
 
   // ---- derived data --------------------------------------------------------
   const nodeFields = useMemo(() => (dag ? deriveNodeFields(dag) : []), [dag])
@@ -40,8 +41,8 @@ export default function App() {
   )
 
   const filteredDag = useMemo(
-    () => (dag ? applyFilters(dag, config) : null),
-    [dag, config],
+    () => (dag ? applyFilters(dag, config, hiddenNodeIds) : null),
+    [dag, config, hiddenNodeIds],
   )
 
   const edgeColorMap = useMemo(
@@ -67,6 +68,7 @@ export default function App() {
       setSelectedNode(null)
       setSelectedEdge(null)
       setSelectedRelId(null)
+      setHiddenNodeIds(new Set())
       setFitKey(k => k + 1)
     } catch (err) {
       setParseError(err instanceof Error ? err.message : String(err))
@@ -94,6 +96,21 @@ export default function App() {
     setSelectedNode(null)
     setSelectedEdge(null)
     setSelectedRelId(null)
+  }, [])
+
+  const handleHideNode = useCallback((nodeId: string) => {
+    setHiddenNodeIds(prev => new Set(prev).add(nodeId))
+    setSelectedNode(null)
+    setSelectedEdge(null)
+    setSelectedRelId(null)
+  }, [])
+
+  const handleUnhideNode = useCallback((nodeId: string) => {
+    setHiddenNodeIds(prev => {
+      const next = new Set(prev)
+      next.delete(nodeId)
+      return next
+    })
   }, [])
 
   const handleToggleNodeType = useCallback((type: string) => {
@@ -163,6 +180,8 @@ export default function App() {
             edgeFields={edgeFields}
             colorMap={colorMap}
             edgeColorMap={edgeColorMap}
+            hiddenNodeIds={hiddenNodeIds}
+            onUnhideNode={handleUnhideNode}
             onToggleNodeType={handleToggleNodeType}
             onExportNeo4j={dag ? handleExportNeo4j : undefined}
             onCopyGraphQuery={dag ? handleCopyGraphQuery : undefined}
@@ -180,6 +199,7 @@ export default function App() {
               onNodeClick={handleNodeClick}
               onRelClick={handleRelClick}
               onCanvasClick={handleCanvasClick}
+              onHideNode={handleHideNode}
             />
           ) : (
             <div className="graph-empty">

@@ -13,6 +13,8 @@ interface Props {
   edgeFields:       string[]
   colorMap:         Map<string, string>
   edgeColorMap:     Map<string, string>
+  hiddenNodeIds:    Set<string>
+  onUnhideNode:     (nodeId: string) => void
   onToggleNodeType: (type: string) => void
   onExportNeo4j?:    () => Promise<void>
   onCopyGraphQuery?: () => Promise<void>
@@ -21,7 +23,7 @@ interface Props {
 
 export default function Sidebar({
   onLoad, parseError, facets, config, onConfigChange, nodeFields, edgeFields, colorMap, edgeColorMap,
-  onToggleNodeType, onExportNeo4j, onCopyGraphQuery, onCopyDropQuery,
+  hiddenNodeIds, onUnhideNode, onToggleNodeType, onExportNeo4j, onCopyGraphQuery, onCopyDropQuery,
 }: Props) {
   const [text, setText] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
@@ -219,6 +221,19 @@ export default function Sidebar({
           </section>
         )
       })}
+
+      {/* ── Hidden nodes ───────────────────────────────────────────────── */}
+      {hiddenNodeIds.size > 0 && (
+        <section className="sidebar-section">
+          <div className="sidebar-section-title">Hidden nodes</div>
+          {[...hiddenNodeIds].map(id => (
+            <div key={id} className="hidden-node-item">
+              <span className="truncate">{id}</span>
+              <button className="btn-tiny" onClick={() => onUnhideNode(id)}>show</button>
+            </div>
+          ))}
+        </section>
+      )}
 
     </aside>
   )

@@ -15,9 +15,10 @@ interface Props {
   onNodeClick:   (node: Node) => void
   onRelClick:    (rel: Relationship) => void
   onCanvasClick: () => void
+  onHideNode:    (nodeId: string) => void
 }
 
-export default function GraphView({ nodes, rels, layout, fitKey, onNodeClick, onRelClick, onCanvasClick }: Props) {
+export default function GraphView({ nodes, rels, layout, fitKey, onNodeClick, onRelClick, onCanvasClick, onHideNode }: Props) {
     const nvlRef = useRef<NVL>(null)
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId: string } | null>(null)
     const lastFitKeyRef = useRef(-1)
@@ -154,6 +155,10 @@ export default function GraphView({ nodes, rels, layout, fitKey, onNodeClick, on
                         nvlRef.current?.updateElementsInGraph([{ id: contextMenu.nodeId, pinned: false }], [])
                         setContextMenu(null)
                     }}>Unpin node</button>
+                    <button onClick={() => {
+                        onHideNode(contextMenu.nodeId)
+                        setContextMenu(null)
+                    }}>Hide node</button>
                 </div>
             )}
         </div>

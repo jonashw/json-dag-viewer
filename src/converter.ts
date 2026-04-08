@@ -228,8 +228,10 @@ export function deriveEdgeFields(dag: DagGraph): string[] {
 // ---------------------------------------------------------------------------
 // Apply facet filters to produce a filtered sub-graph
 // ---------------------------------------------------------------------------
-export function applyFilters(dag: DagGraph, config: GraphConfig): DagGraph {
+export function applyFilters(dag: DagGraph, config: GraphConfig, hiddenNodeIds?: Set<string>): DagGraph {
   const filteredNodes = dag.nodes.filter(node => {
+    // Hide individually hidden nodes
+    if (hiddenNodeIds?.has(node.id)) return false
     // Hide by node type (colorFacetField value)
     if (config.colorFacetField && config.hiddenNodeTypes.size > 0) {
       const v = node[config.colorFacetField]
