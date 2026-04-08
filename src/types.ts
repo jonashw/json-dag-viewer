@@ -37,4 +37,6 @@ export interface GraphConfig {
   colorFacetField:  string | null  // which attribute drives node colour (null = uniform)
   /** Per-facet inclusion filter: empty Set means "show all values". */
   facetFilters:     Record<string, Set<string>>
+  /** Node-type values (from colorFacetField) to hide, along with connected edges. */
+  hiddenNodeTypes:  Set<string>
 }

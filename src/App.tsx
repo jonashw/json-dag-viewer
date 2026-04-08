@@ -21,6 +21,7 @@ export default function App() {
     edgeCaptionField: '',
     colorFacetField:  null,
     facetFilters:     {},
+    hiddenNodeTypes:  new Set(),
   })
   const [parseError,   setParseError]   = useState<string | null>(null)
   const [sidebarOpen,  setSidebarOpen]  = useState(true)
@@ -95,6 +96,14 @@ export default function App() {
     setSelectedRelId(null)
   }, [])
 
+  const handleToggleNodeType = useCallback((type: string) => {
+    setConfig(prev => {
+      const next = new Set(prev.hiddenNodeTypes)
+      if (next.has(type)) next.delete(type); else next.add(type)
+      return { ...prev, hiddenNodeTypes: next }
+    })
+  }, [])
+
   const handleExportNeo4j = useCallback(async () => {
     if (!dag) return
     const blocks = toCypherText(dag as unknown as RawGraph)
@@ -154,6 +163,7 @@ export default function App() {
             edgeFields={edgeFields}
             colorMap={colorMap}
             edgeColorMap={edgeColorMap}
+            onToggleNodeType={handleToggleNodeType}
             onExportNeo4j={dag ? handleExportNeo4j : undefined}
             onCopyGraphQuery={dag ? handleCopyGraphQuery : undefined}
             onCopyDropQuery={dag ? handleCopyDropQuery : undefined}

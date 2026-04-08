@@ -13,6 +13,7 @@ interface Props {
   edgeFields:       string[]
   colorMap:         Map<string, string>
   edgeColorMap:     Map<string, string>
+  onToggleNodeType: (type: string) => void
   onExportNeo4j?:    () => Promise<void>
   onCopyGraphQuery?: () => Promise<void>
   onCopyDropQuery?:  () => Promise<void>
@@ -20,7 +21,7 @@ interface Props {
 
 export default function Sidebar({
   onLoad, parseError, facets, config, onConfigChange, nodeFields, edgeFields, colorMap, edgeColorMap,
-  onExportNeo4j, onCopyGraphQuery, onCopyDropQuery,
+  onToggleNodeType, onExportNeo4j, onCopyGraphQuery, onCopyDropQuery,
 }: Props) {
   const [text, setText] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
@@ -144,6 +145,8 @@ export default function Sidebar({
         colorFacetField={config.colorFacetField}
         colorEntries={colorEntries}
         edgeColorMap={edgeColorMap}
+        hiddenNodeTypes={config.hiddenNodeTypes}
+        onToggleNodeType={onToggleNodeType}
       />
 
       {/* ── Display options ────────────────────────────────────────────── */}

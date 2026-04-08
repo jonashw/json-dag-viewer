@@ -179,6 +179,7 @@ export function buildDefaultConfig(dag: DagGraph, facets: FacetDef[]): GraphConf
     edgeCaptionField: detectBestEdgeCaption(dag),
     colorFacetField:  detectBestColorFacet(facets),
     facetFilters:     {},
+    hiddenNodeTypes:  new Set(),
   }
 }
 
@@ -229,6 +230,11 @@ export function deriveEdgeFields(dag: DagGraph): string[] {
 // ---------------------------------------------------------------------------
 export function applyFilters(dag: DagGraph, config: GraphConfig): DagGraph {
   const filteredNodes = dag.nodes.filter(node => {
+    // Hide by node type (colorFacetField value)
+    if (config.colorFacetField && config.hiddenNodeTypes.size > 0) {
+      const v = node[config.colorFacetField]
+      if (v != null && config.hiddenNodeTypes.has(String(v))) return false
+    }
     for (const [attr, included] of Object.entries(config.facetFilters)) {
       if (included.size === 0) continue  // empty Set = all values pass
       const v = node[attr]
