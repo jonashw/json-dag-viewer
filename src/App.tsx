@@ -28,6 +28,7 @@ export default function App() {
   const [selectedEdge,  setSelectedEdge]  = useState<DagEdge | null>(null)
   const [selectedRelId, setSelectedRelId] = useState<string | null>(null)
   const [layout,        setLayout]        = useState<'forceDirected' | 'hierarchical'>('forceDirected')
+  const [fitKey, setFitKey] = useState(0)
 
   // ---- derived data --------------------------------------------------------
   const nodeFields = useMemo(() => (dag ? deriveNodeFields(dag) : []), [dag])
@@ -65,6 +66,7 @@ export default function App() {
       setSelectedNode(null)
       setSelectedEdge(null)
       setSelectedRelId(null)
+      setFitKey(k => k + 1)
     } catch (err) {
       setParseError(err instanceof Error ? err.message : String(err))
     }
@@ -164,6 +166,7 @@ export default function App() {
               nodes={nvlGraph.nodes.map(n => ({ ...n, selected: n.id === selectedNode?.id }))}
               rels={nvlGraph.rels.map(r => ({ ...r, selected: r.id === selectedRelId }))}
               layout={layout}
+              fitKey={fitKey}
               onNodeClick={handleNodeClick}
               onRelClick={handleRelClick}
               onCanvasClick={handleCanvasClick}

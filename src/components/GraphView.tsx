@@ -10,14 +10,19 @@ interface Props {
   nodes:         Node[]
   rels:          Relationship[]
   layout:        'forceDirected' | 'hierarchical'
+  /** Increment to trigger a one-time fit-to-viewport after the next layout. */
+  fitKey:        number
   onNodeClick:   (node: Node) => void
   onRelClick:    (rel: Relationship) => void
   onCanvasClick: () => void
 }
 
-export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick, onCanvasClick }: Props) {
+export default function GraphView({ nodes, rels, layout, fitKey, onNodeClick, onRelClick, onCanvasClick }: Props) {
     const nvlRef = useRef<NVL>(null)
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId: string } | null>(null)
+    const lastFitKeyRef = useRef(-1)
+    const fitKeyRef = useRef(fitKey)
+    fitKeyRef.current = fitKey
 
     // NVL requires the minimap container to exist in the DOM *before* it initialises.
     // Render the div unconditionally first, capture it via a callback ref, then
@@ -46,6 +51,9 @@ export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick
         if (!nvl) return
         nvl.fit(nodes.map(n => n.id), { animated: false })
     }, [nodes])
+
+    const fitAllRef = useRef(fitAll)
+    fitAllRef.current = fitAll
 
     // Dev-only test helper: exposes nvlRef state on window so Playwright tests can verify it
     useEffect(() => {
@@ -84,8 +92,10 @@ export default function GraphView({ nodes, rels, layout, onNodeClick, onRelClick
                 rels={rels}
                 nvlCallbacks={{
                     onLayoutDone: () => {
-                        console.log('layout done');
-                        //fitAll();
+                        if (lastFitKeyRef.current !== fitKeyRef.current) {
+                            lastFitKeyRef.current = fitKeyRef.current
+                            fitAllRef.current()
+                        }
                     }
                 }}
                 nvlOptions={{
