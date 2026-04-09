@@ -2,18 +2,18 @@ import type { Node, Relationship } from '@neo4j-nvl/base'
 import type { DagGraph, DagNode, DagEdge, FacetDef, GraphConfig } from './types'
 
 // ---------------------------------------------------------------------------
-// Colour palette (Tableau-20 inspired)
+// Colour palette (Tableau-20 inspired, HSL)
 // ---------------------------------------------------------------------------
 const COLOR_PALETTE = [
-  '#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f',
-  '#edc948', '#b07aa1', '#ff9da7', '#9c755f', '#bab0ac',
-  '#4e9e8c', '#e6a817', '#8cd17d', '#86bcb6', '#f1ce63',
-  '#d37295', '#a0cbe8', '#ffbe7d', '#499894', '#fabfd2',
+  'hsl(211, 36%, 48%)', 'hsl(30, 88%, 56%)',  'hsl(359, 70%, 61%)', 'hsl(175, 31%, 59%)', 'hsl(113, 34%, 47%)',
+  'hsl(47, 82%, 61%)',  'hsl(317, 25%, 58%)', 'hsl(354, 100%, 81%)', 'hsl(22, 24%, 49%)', 'hsl(17, 9%, 70%)',
+  'hsl(167, 34%, 46%)', 'hsl(42, 82%, 50%)',  'hsl(109, 48%, 65%)', 'hsl(173, 29%, 63%)', 'hsl(45, 84%, 67%)',
+  'hsl(338, 52%, 64%)', 'hsl(204, 61%, 77%)', 'hsl(30, 100%, 75%)', 'hsl(177, 35%, 44%)', 'hsl(341, 86%, 86%)',
 ]
 
-const DEFAULT_NODE_COLOR = '#4e9e8c'
+const DEFAULT_NODE_COLOR = 'hsl(167, 34%, 46%)'
 const DEFAULT_NODE_SIZE  = 30
-const DEFAULT_EDGE_COLOR = '#aaaaaa'
+const DEFAULT_EDGE_COLOR = 'hsl(0, 0%, 67%)'
 // Edge types get colours from the second half of the palette to stay visually distinct from nodes
 const EDGE_PALETTE_OFFSET = 10
 
