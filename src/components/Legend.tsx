@@ -8,7 +8,7 @@ interface Props {
   onToggleNodeType: (type: string) => void
 }
 
-const DEFAULT_COLOR = 'hsl(167, 34%, 46%)'
+const DEFAULT_COLOR = '#4d9d8c'  // hsl(167, 34%, 46%)
 
 export default function Legend({ colorFacetField, colorEntries, edgeColorMap, hiddenNodeTypes, onToggleNodeType }: Props) {
   const edgeEntries = [...edgeColorMap.entries()].map(([label, color]) => ({ label, color }))

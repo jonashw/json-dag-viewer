@@ -2,18 +2,35 @@ import type { Node, Relationship } from '@neo4j-nvl/base'
 import type { DagGraph, DagNode, DagEdge, FacetDef, GraphConfig } from './types'
 
 // ---------------------------------------------------------------------------
-// Colour palette (Tableau-20 inspired, HSL)
+// Colour palette (Tableau-20 inspired, defined in HSL for readability)
 // ---------------------------------------------------------------------------
-const COLOR_PALETTE = [
-  'hsl(211, 36%, 48%)', 'hsl(30, 88%, 56%)',  'hsl(359, 70%, 61%)', 'hsl(175, 31%, 59%)', 'hsl(113, 34%, 47%)',
-  'hsl(47, 82%, 61%)',  'hsl(317, 25%, 58%)', 'hsl(354, 100%, 81%)', 'hsl(22, 24%, 49%)', 'hsl(17, 9%, 70%)',
-  'hsl(167, 34%, 46%)', 'hsl(42, 82%, 50%)',  'hsl(109, 48%, 65%)', 'hsl(173, 29%, 63%)', 'hsl(45, 84%, 67%)',
-  'hsl(338, 52%, 64%)', 'hsl(204, 61%, 77%)', 'hsl(30, 100%, 75%)', 'hsl(177, 35%, 44%)', 'hsl(341, 86%, 86%)',
+
+/** Convert an HSL triplet (h: 0–360, s: 0–100, l: 0–100) to a '#rrggbb' hex string. */
+function hslToHex(h: number, s: number, l: number): string {
+  s /= 100
+  l /= 100
+  const a = s * Math.min(l, 1 - l)
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12
+    const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))
+    return Math.round(255 * c).toString(16).padStart(2, '0')
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
+}
+
+//                          H    S%   L%
+const COLOR_PALETTE_HSL: [number, number, number][] = [
+  [211,  50, 48], [ 30, 50, 56], [359, 50, 61], [175, 50, 59], [113, 50, 47],
+  [ 47,  50, 61], [317, 25, 58], [354, 50, 81], [ 22, 50, 49], [ 17, 50, 70],
+  [167,  50, 46], [ 42, 50, 50], [109, 48, 65], [173, 50, 63], [ 45, 50, 67],
+  [338,  50, 64], [204, 50, 77], [ 30, 50, 75], [177, 50, 44], [341, 50, 86],
 ]
 
-const DEFAULT_NODE_COLOR = 'hsl(167, 34%, 46%)'
+const COLOR_PALETTE = COLOR_PALETTE_HSL.map(([h, s, l]) => hslToHex(h, s, l))
+
+const DEFAULT_NODE_COLOR = hslToHex(167, 34, 46)
 const DEFAULT_NODE_SIZE  = 30
-const DEFAULT_EDGE_COLOR = 'hsl(0, 0%, 67%)'
+const DEFAULT_EDGE_COLOR = hslToHex(0, 0, 67)
 // Edge types get colours from the second half of the palette to stay visually distinct from nodes
 const EDGE_PALETTE_OFFSET = 10
 
