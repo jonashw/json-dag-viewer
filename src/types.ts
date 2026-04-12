@@ -32,11 +32,13 @@ export interface FacetDef {
 // Display + filter config — starts from auto-detected defaults, user-overridable
 // ---------------------------------------------------------------------------
 export interface GraphConfig {
-  nodeCaptionField: string         // which node attribute becomes the visual caption
+  nodeCaptionField: string         // default node caption attribute
   edgeCaptionField: string         // which edge attribute becomes the visual label ('' = none)
   colorFacetField:  string | null  // which attribute drives node colour (null = uniform)
   /** Per-facet inclusion filter: empty Set means "show all values". */
   facetFilters:     Record<string, Set<string>>
   /** Node-type values (from colorFacetField) to hide, along with connected edges. */
   hiddenNodeTypes:  Set<string>
+  /** Per-node-type overrides for caption field and color. Keyed by colorFacetField value. */
+  nodeTypeOverrides: Record<string, { captionField?: string; color?: string }>
 }

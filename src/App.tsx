@@ -22,6 +22,7 @@ export default function App() {
     colorFacetField:  null,
     facetFilters:     {},
     hiddenNodeTypes:  new Set(),
+    nodeTypeOverrides: {},
   })
   const [parseError,   setParseError]   = useState<string | null>(null)
   const [sidebarOpen,  setSidebarOpen]  = useState(true)
@@ -36,8 +37,8 @@ export default function App() {
   const nodeFields = useMemo(() => (dag ? deriveNodeFields(dag) : []), [dag])
   const edgeFields = useMemo(() => (dag ? deriveEdgeFields(dag) : []), [dag])
   const colorMap   = useMemo(
-    () => buildColorMap(facets, config.colorFacetField),
-    [facets, config.colorFacetField],
+    () => buildColorMap(facets, config.colorFacetField, config.nodeTypeOverrides),
+    [facets, config.colorFacetField, config.nodeTypeOverrides],
   )
 
   const filteredDag = useMemo(

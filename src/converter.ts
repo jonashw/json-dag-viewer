@@ -18,6 +18,14 @@ function hslToHex(h: number, s: number, l: number): string {
   return `#${f(0)}${f(8)}${f(4)}`
 }
 
+const rainbowHSLColor = (numOfSteps: number, step: number) => 
+  [360 * (step % numOfSteps) / numOfSteps, 30, 50];
+
+const rainbowRgbColor = (numOfSteps: number, step: number) => {
+  const [h, s, l] = rainbowHSLColor(numOfSteps, step)
+  return hslToHex(h, s, l)
+};
+
 //                          H    S%   L%
 const COLOR_PALETTE_HSL: [number, number, number][] = [
   [211,  50, 48], [ 30, 50, 56], [359, 50, 61], [175, 50, 59], [113, 50, 47],
@@ -32,7 +40,6 @@ const DEFAULT_NODE_COLOR = hslToHex(167, 34, 46)
 const DEFAULT_NODE_SIZE  = 30
 const DEFAULT_EDGE_COLOR = hslToHex(0, 0, 67)
 // Edge types get colours from the second half of the palette to stay visually distinct from nodes
-const EDGE_PALETTE_OFFSET = 10
 
 // ---------------------------------------------------------------------------
 // Parse arbitrary JSON -> DagGraph  (no strict schema required)
@@ -197,6 +204,7 @@ export function buildDefaultConfig(dag: DagGraph, facets: FacetDef[]): GraphConf
     colorFacetField:  detectBestColorFacet(facets),
     facetFilters:     {},
     hiddenNodeTypes:  new Set(),
+    nodeTypeOverrides: {},
   }
 }
 
@@ -206,18 +214,22 @@ export function buildDefaultConfig(dag: DagGraph, facets: FacetDef[]): GraphConf
 export function buildColorMap(
   facets: FacetDef[],
   colorFacetField: string | null,
+  overrides: Record<string, { color?: string }> = {},
 ): Map<string, string> {
   if (!colorFacetField) return new Map()
   const facet = facets.find(f => f.attribute === colorFacetField)
   if (!facet) return new Map()
-  return new Map(facet.values.map((v, i) => [v, COLOR_PALETTE[i % COLOR_PALETTE.length]]))
+  return new Map(facet.values.map((v, i) => [
+    v,
+    overrides[v]?.color ?? rainbowRgbColor(facet.values.length, i)
+  ]))
 }
 
 /** Assigns a stable colour to each distinct edge `type` value. */
 export function buildEdgeColorMap(dag: DagGraph): Map<string, string> {
   const types = [...new Set(dag.edges.map(e => String(e.type ?? '')).filter(Boolean))].sort()
   return new Map(types.map((t, i) =>
-    [t, COLOR_PALETTE[(EDGE_PALETTE_OFFSET + i) % COLOR_PALETTE.length]]
+    [t, rainbowRgbColor(types.length, i)]
   ))
 }
 
@@ -289,14 +301,21 @@ export function convertToNvl(
 
   return {
     nodes: dag.nodes.map(node => {
-      const captionVal = node[config.nodeCaptionField]
-      const caption    = captionVal != null ? String(captionVal) : node.id
-
+      let captionField = config.nodeCaptionField
       let color = DEFAULT_NODE_COLOR
+
       if (config.colorFacetField) {
         const facetVal = node[config.colorFacetField]
-        if (facetVal != null) color = colorMap.get(String(facetVal)) ?? DEFAULT_NODE_COLOR
+        if (facetVal != null) {
+          const typeKey = String(facetVal)
+          const override = config.nodeTypeOverrides[typeKey]
+          if (override?.captionField) captionField = override.captionField
+          color = colorMap.get(typeKey) ?? DEFAULT_NODE_COLOR
+        }
       }
+
+      const captionVal = node[captionField]
+      const caption    = captionVal != null ? String(captionVal) : node.id
 
       return { id: node.id, caption, color, size: DEFAULT_NODE_SIZE }
     }),

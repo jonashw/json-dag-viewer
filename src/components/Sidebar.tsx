@@ -149,6 +149,9 @@ export default function Sidebar({
         edgeColorMap={edgeColorMap}
         hiddenNodeTypes={config.hiddenNodeTypes}
         onToggleNodeType={onToggleNodeType}
+        nodeFields={nodeFields}
+        config={config}
+        onConfigChange={onConfigChange}
       />
 
       {/* ── Display options ────────────────────────────────────────────── */}
@@ -156,14 +159,19 @@ export default function Sidebar({
         <section className="sidebar-section">
           <div className="sidebar-section-title">Display</div>
 
-          <label className="sidebar-field-label">Node caption</label>
-          <select
-            className="sidebar-select"
-            value={config.nodeCaptionField}
-            onChange={e => onConfigChange({ ...config, nodeCaptionField: e.target.value })}
-          >
-            {nodeFields.map(f => <option key={f} value={f}>{f}</option>)}
-          </select>
+          {/* Show global node caption only when there are no per-type controls */}
+          {!config.colorFacetField && (
+            <>
+              <label className="sidebar-field-label">Node caption</label>
+              <select
+                className="sidebar-select"
+                value={config.nodeCaptionField}
+                onChange={e => onConfigChange({ ...config, nodeCaptionField: e.target.value })}
+              >
+                {nodeFields.map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </>
+          )}
 
           {edgeFields.length > 0 && (
             <>
